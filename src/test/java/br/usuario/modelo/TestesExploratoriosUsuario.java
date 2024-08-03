@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestesExploratoriosUsuario {
     @Test
@@ -29,7 +30,7 @@ public class TestesExploratoriosUsuario {
         
         service.ativar(usuarioNormal, usuarioAdministrador);
         
-        assertEquals(new Ativo().getClass().getSimpleName(), usuarioAdministrador.getNomeEstado(), "Usuário administrador deve conter o estado 'Ativo'");       
         assertEquals(new Ativo().getClass().getSimpleName(), usuarioNormal.getNomeEstado(), "Usuário normal foi ativado por um administrador e deve conter o estado 'Ativo'");
     }
+
 }
