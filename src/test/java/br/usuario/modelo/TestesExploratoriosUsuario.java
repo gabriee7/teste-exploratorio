@@ -3,9 +3,19 @@ package br.usuario.modelo;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
 
 public class TestesExploratoriosUsuario {
+    private Usuario usuario;
+
+    @BeforeEach
+    public void criaUsuarioNormal(){
+        String nome = "Jhon";
+        String senha = "123";
+
+        this.usuario = new Usuario(nome, TipoUsuario.NORMAL, senha);
+    }
+
     @Test
     public void ExplorarCriacaoDeUsuario() {
         String nome = "Jhon";
@@ -34,21 +44,32 @@ public class TestesExploratoriosUsuario {
 
     @Test
     public void UsuarioNovoDeveSerAtivadoMasNaoDesativadoOuAdvertido() {
-        String nome = "Jhon";
-        String senha = "123";
-
-        Usuario usuario = new Usuario(nome, TipoUsuario.NORMAL, senha);
 
         try {
-            usuario.desativar();
+            this.usuario.desativar();
         } catch (IllegalStateException e) {
             assertEquals("Usuário novo não pode ser desativado", e.getMessage(), "A mensagem de exceção para desativação deve ser correta");
         }
 
         try {
-            usuario.advertir();
+            this.usuario.advertir();
         } catch (IllegalStateException e) {
             assertEquals("Usuário novo não pode ser advertido", e.getMessage(), "A mensagem de exceção para advertência deve ser correta");
         }
+    }
+    
+    @Test
+    public void UsuarioAtivoDeveSerDesativadoOuAdvertido() {
+
+        this.usuario.ativar(); 
+
+        this.usuario.desativar();
+        assertEquals(new Desativado().getClass().getSimpleName(), this.usuario.getNomeEstado(), "O usuário deve ser desativado e o estado deve ser 'Desativado'");
+
+        this.usuario.ativar(); 
+
+        this.usuario.advertir();
+        assertEquals(new Ativo().getClass().getSimpleName(), this.usuario.getNomeEstado(), "O usuário deve permanecer no estado 'Ativo' após a advertência");
+        assertEquals(1, this.usuario.getNumeroDeAdvertencias(), "O número de advertências deve ser incrementado após a advertência");
     }
 }
