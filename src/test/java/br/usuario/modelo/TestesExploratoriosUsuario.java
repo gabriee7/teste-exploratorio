@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestesExploratoriosUsuario {
     @Test
@@ -33,4 +32,23 @@ public class TestesExploratoriosUsuario {
         assertEquals(new Ativo().getClass().getSimpleName(), usuarioNormal.getNomeEstado(), "Usuário normal foi ativado por um administrador e deve conter o estado 'Ativo'");
     }
 
+    @Test
+    public void UsuarioNovoDeveSerAtivadoMasNaoDesativadoOuAdvertido() {
+        String nome = "Jhon";
+        String senha = "123";
+
+        Usuario usuario = new Usuario(nome, TipoUsuario.NORMAL, senha);
+
+        try {
+            usuario.desativar();
+        } catch (IllegalStateException e) {
+            assertEquals("Usuário novo não pode ser desativado", e.getMessage(), "A mensagem de exceção para desativação deve ser correta");
+        }
+
+        try {
+            usuario.advertir();
+        } catch (IllegalStateException e) {
+            assertEquals("Usuário novo não pode ser advertido", e.getMessage(), "A mensagem de exceção para advertência deve ser correta");
+        }
+    }
 }
