@@ -72,4 +72,29 @@ public class TestesExploratoriosUsuario {
         assertEquals(new Ativo().getClass().getSimpleName(), this.usuario.getNomeEstado(), "O usuário deve permanecer no estado 'Ativo' após a advertência");
         assertEquals(1, this.usuario.getNumeroDeAdvertencias(), "O número de advertências deve ser incrementado após a advertência");
     }
+    
+    @Test
+    public void UsuarioDeveIrParaBanimentoTemporarioComDuasAdvertencias() {
+        this.usuario.ativar();
+
+        this.usuario.advertir();
+        assertEquals(1, this.usuario.getNumeroDeAdvertencias(), "O número de advertências deve ser 1 após a primeira advertência");
+        assertEquals(new Ativo().getClass().getSimpleName(), this.usuario.getNomeEstado(), "O usuário deve permanecer no estado 'Ativo' após a primeira advertência");
+
+        this.usuario.advertir();
+        assertEquals(2, this.usuario.getNumeroDeAdvertencias(), "O número de advertências deve ser 2 após a segunda advertência");
+        assertEquals("BanidoTemporario", this.usuario.getNomeEstado(), "O usuário deve estar banido temporariamente após duas advertências");
+
+        try {
+            this.usuario.advertir();
+        } catch (IllegalStateException e) {
+            assertEquals("Usuário banido temporariamente não pode ser advertido", e.getMessage(), "A mensagem de exceção para advertência deve ser correta");
+        }
+
+        try {
+            this.usuario.desativar();
+        } catch (IllegalStateException e) {
+            assertEquals("Usuário banido temporariamente não pode ser desativado", e.getMessage(), "A mensagem de exceção para desativação deve ser correta");
+        }
+    }
 }
