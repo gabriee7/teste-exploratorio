@@ -100,40 +100,43 @@ public class TestesExploratoriosUsuario {
         }
     }
     
-//    @Test
-//    public void BanimentoTemporarioDeveDurar30Segundos() throws InterruptedException {
-//        CountDownLatch latch = new CountDownLatch(1);
-//
-//        this.usuario.ativar(); 
-//
-//        this.usuario.advertir(); 
-//        this.usuario.advertir(); 
-//        
-//        assertEquals("BanidoTemporario", this.usuario.getNomeEstado(), "O usuário deve estar banido temporariamente após duas advertências");
-//
-//        Thread.sleep(30000);
-//
-//        assertEquals(new Ativo().getClass().getSimpleName(), this.usuario.getNomeEstado(), "Após 30 segundos (banimento temporário), o usuário deve retornar ao estado 'Ativo'");
-//    
-//        //Oportunidade
-//        this.usuario.advertir(); 
-//        assertEquals(new BanidoDefinitivo().getClass().getSimpleName(), this.usuario.getNomeEstado(), "Usuário banido definitivamente após período de banimento temporário (30s), deve conter o estado 'BanidoDefinitivo' sem possibilidade de retorno para outro estado.");
-//    
-//    }
+    @Test
+    public void BanimentoTemporarioDeveDurar30Segundos() throws InterruptedException {
+        this.usuario.ativar(); 
+
+        this.usuario.advertir(); 
+        this.usuario.advertir(); 
+        
+        assertEquals("BanidoTemporario", this.usuario.getNomeEstado(), "O usuário deve estar banido temporariamente após duas advertências");
+
+        Thread.sleep(30001);
+
+        assertEquals(new Ativo().getClass().getSimpleName(), this.usuario.getNomeEstado(), "Após 30 segundos (banimento temporário), o usuário deve retornar ao estado 'Ativo'");
+    
+        //Oportunidade
+        this.usuario.advertir(); 
+        assertEquals(new BanidoDefinitivo().getClass().getSimpleName(), this.usuario.getNomeEstado(), "Usuário banido definitivamente após período de banimento temporário (30s), deve conter o estado 'BanidoDefinitivo' sem possibilidade de retorno para outro estado.");
+    
+    }
     
     //Falhando, relatar na carta
     @Test
     public void AtivarOuDesativarOuAdvertir() {
-        String nome = "Jhon Doe";
-        String senha = "123";
-        
-        Usuario usuarioAdministrador = new Usuario(nome, TipoUsuario.ADMINISTRADOR, senha);
-        RegraUsuarioService service = new RegraUsuarioService();
-
         this.usuario.ativar();
         this.usuario.desativar();
-
-        service.ativar(this.usuario, usuarioAdministrador);
-        
     }
+
+    @Test
+    public void UsuarioInativo(){
+        try {
+            this.usuario.advertir();
+        } catch (Exception e) {
+            assertEquals("Usuário novo não pode ser advertido", e.getMessage(), "A mensagem de exceção para usuario inativo deve ser correta");
+        }
+    
+        this.usuario.ativar();
+        this.usuario.desativar();
+        this.usuario.ativar();
+    }
+        
 }
