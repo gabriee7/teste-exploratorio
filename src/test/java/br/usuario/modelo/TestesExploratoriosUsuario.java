@@ -1,9 +1,6 @@
 package br.usuario.modelo;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -113,13 +110,11 @@ public class TestesExploratoriosUsuario {
 
         assertEquals(new Ativo().getClass().getSimpleName(), this.usuario.getNomeEstado(), "Após 30 segundos (banimento temporário), o usuário deve retornar ao estado 'Ativo'");
     
-        //Oportunidade
         this.usuario.advertir(); 
         assertEquals(new BanidoDefinitivo().getClass().getSimpleName(), this.usuario.getNomeEstado(), "Usuário banido definitivamente após período de banimento temporário (30s), deve conter o estado 'BanidoDefinitivo' sem possibilidade de retorno para outro estado.");
     
     }
     
-    //Falhando, relatar na carta
     @Test
     public void AtivarOuDesativarOuAdvertir() {
         this.usuario.ativar();
