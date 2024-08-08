@@ -2,6 +2,8 @@ package br.usuario.modelo;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.BeforeEach;
 
 public class TestesExploratoriosUsuario {
@@ -23,8 +25,8 @@ public class TestesExploratoriosUsuario {
         Usuario usuarioNormal = new Usuario(nome, TipoUsuario.NORMAL, senha);
         Usuario usuarioAdministrador = new Usuario(nome, TipoUsuario.ADMINISTRADOR, senha);
 
-        assertEquals(new Novo().toString(), usuarioNormal.getNomeEstado(), "Ao ser criado o usuário do tipo NORMAL deve possuir o estado 'Novo'");
-        assertEquals(new Novo().toString(), usuarioAdministrador.getNomeEstado(), "Ao ser criado o usuário do tipo ADMINISTRADOR deve possuir o estado 'Novo'");
+        assertEquals(new Novo().getClass().getSimpleName(), usuarioNormal.getNomeEstado(), "Ao ser criado o usuário do tipo NORMAL deve possuir o estado 'Novo'");
+        assertEquals(new Novo().getClass().getSimpleName(), usuarioAdministrador.getNomeEstado(), "Ao ser criado o usuário do tipo ADMINISTRADOR deve possuir o estado 'Novo'");
     }
     
     @Test
@@ -43,18 +45,24 @@ public class TestesExploratoriosUsuario {
 
     @Test
     public void UsuarioNovoDeveSerAtivadoMasNaoDesativadoOuAdvertido() {
+        // Tentar desativar usuário novo
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
+                this.usuario.desativar();
+        }, "A mensagem de exceção deve ser lançada ao tentar desativar um usuário novo");
 
-        try {
-            this.usuario.desativar();
-        } catch (IllegalStateException e) {
-            assertEquals("Usuário novo não pode ser desativado", e.getMessage(), "A mensagem de exceção para desativação deve ser correta");
-        }
+        assertEquals(exception.getMessage(), "Usuário novo não pode ser desativado", "A mensagem de exceção para desativação deve ser correta");
 
-        try {
+
+        // Tentar advertir usuário novo
+        exception = assertThrows(IllegalStateException.class, () -> {
             this.usuario.advertir();
-        } catch (IllegalStateException e) {
-            assertEquals("Usuário novo não pode ser advertido", e.getMessage(), "A mensagem de exceção para advertência deve ser correta");
-        }
+        }, "A mensagem de exceção deve ser lançada ao tentar advertir um usuário novo");
+
+        assertEquals(exception.getMessage(), "Usuário novo não pode ser advertido", "A mensagem de exceção para advertência deve ser correta");
+
+        // Tentar ativar usuário novo
+        this.usuario.ativar();
+        assertEquals(new Ativo().getClass().getSimpleName(), this.usuario.getNomeEstado(), "Deve ser possível ativar um usuário novo");
     }
     
     @Test
