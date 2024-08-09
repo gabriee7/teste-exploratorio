@@ -199,7 +199,28 @@ public class TestesExploratoriosUsuario {
 
 
 
+        // Explorar se usuário normal não consegue alterar permissões
+        Usuario usuarioNormal = new Usuario(this.usuario.getNome(), TipoUsuario.NORMAL, "123");
+        SecurityException exception = assertThrows(SecurityException.class, () -> {
+            this.service.ativar(this.usuario, usuarioNormal);
+        }, "A mensagem de exceção deve ser lançada quando um usuário não tem permissões para ativar outro");
+        assertEquals(exception.getMessage(), "Ação permitida apenas para administradores", "A mensagem de exceção deve ser correta");
+
+        this.usuario.setEstado(new Ativo());
+        exception = assertThrows(SecurityException.class, () -> {
+            this.service.advertir(this.usuario, usuarioNormal);
+        }, "A mensagem de exceção deve ser lançada quando um usuário não tem permissões para advertir outro");
+        assertEquals(exception.getMessage(), "Ação permitida apenas para administradores", "A mensagem de exceção deve ser correta");
+
+        exception = assertThrows(SecurityException.class, () -> {
+            this.service.desativar(this.usuario, usuarioNormal);
+        }, "A mensagem de exceção deve ser lançada quando um usuário não tem permissões para desativar outro");
+        assertEquals(exception.getMessage(), "Ação permitida apenas para administradores", "A mensagem de exceção deve ser correta");
+
+
+
         // Explorar administrador banido definitivamente
+        this.usuario.setEstado(new Desativado());
         usuarioAdmin.setEstado(new BanidoDefinitivo());
         this.service.ativar(this.usuario, this.usuarioAdmin);
 
