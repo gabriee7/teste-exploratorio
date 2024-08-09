@@ -6,10 +6,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 class BanidoTemporario implements Estado {
-    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService scheduler;
     private final Duration tempoTotalBanimento;
 
     public BanidoTemporario(final Usuario usuario) {
+        this.scheduler = Executors.newScheduledThreadPool(1);
         this.tempoTotalBanimento = Duration.ofSeconds(30);
         usuario.setTempoBanimento(tempoTotalBanimento);
 
@@ -32,7 +33,7 @@ class BanidoTemporario implements Estado {
                 } else {
                     usuario.setEstado(new Ativo());
                 }
-                scheduler.shutdown();
+                scheduler.shutdown(); // Encerrando o executor após completar a tarefa
             }
         }, tempoTotalBanimento.getSeconds(), TimeUnit.SECONDS);
     }
